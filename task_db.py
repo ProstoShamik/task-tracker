@@ -12,7 +12,7 @@ class Task_DB:
             with open('data/task_db.json', 'r') as file:
                 tasks_json = json.load(file)
                 for task in tasks_json:
-                    
+                         
         except:
             print('''Can't load task_db.json''')
             return []
