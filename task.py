@@ -3,6 +3,7 @@ from enum import Enum
 import random
 import uuid
 from typing import Optional
+import json
 
 class TaskStatus(Enum):
     NOT_DONE = 'not done'
@@ -82,7 +83,8 @@ class Task:
         line1 = f'title: {self.title}'
         line2 = f'\ndescription: {self.description}'
         line3 = f'\ncreated at: {created}'
-        line4 = f'\nfinished at: {finished}' if self.finished else ''
+        line4 = f'\nstatus: {self.status}'
+        line5 = f'\nfinished at: {finished}' if self.finished else ''
         
         # todo
 
@@ -90,12 +92,22 @@ class Task:
 
 
 class TastFactory():
-    pass
-    # todo
+    
+    @staticmethod
+    def create_task(title: str, description: str,) -> Task:
+        id = str(uuid.uuid4())[:9]
+        created_at = datetime.now()
+        return Task(id, title, description, created_at)
 
 class TaskSerializer():
-    pass
-    # todo
+    
+    @staticmethod
+    def task_from_dict(task_json: dict) -> Task:
+        pass
+
+    @staticmethod
+    def json_from_task(task: Task) -> json:
+        pass
 
 
     # @classmethod
