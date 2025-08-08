@@ -73,22 +73,28 @@ class Task:
 
     def reopen(self):
         if self.status == TaskStatus.NOT_DONE :
-            print('Task is alresdy not done!')
+            print('Task is already not done!')
+        self._finished_at = None
+        self._status = TaskStatus.DONE
 
 # print task
 
-    def __repr__(self):
+    def __str__(self):
         created = self.created_at.strftime('%Y-%m-%d %H:%M')
-        finished = self.created_at.strftime('%Y-%m-%d %H:%M')
-        line1 = f'title: {self.title}'
-        line2 = f'\ndescription: {self.description}'
-        line3 = f'\ncreated at: {created}'
-        line4 = f'\nstatus: {self.status}'
-        line5 = f'\nfinished at: {finished}' if self.finished else ''
-        
-        # todo
+        status = self.status.value
 
-        return (line1, line2, line3, line4)
+        finished = self.finished_at.strftime('%Y-%m-%d %H:%M') if self.finished_at else 'Not finished'
+        
+        return (f"\nID: {self.id}\n"
+                f"  Title: {self.title}\n"
+                f"  Description: {self.description}\n"
+                f"  Created at: {created}\n"
+                f"  Status: {status}\n"
+                f"  Finished at: {finished}")
+    
+    def __repr__(self):
+       created = self.created_at.strftime('%Y-%m-%d %H:%M')
+       return (f"ID: {self.id}; Title: {self.title}; Created at: {created}")
 
 
 class TastFactory():
@@ -99,26 +105,34 @@ class TastFactory():
         created_at = datetime.now()
         return Task(id, title, description, created_at)
 
+
 class TaskSerializer():
     
     @staticmethod
-    def task_from_dict(task_json: dict) -> Task:
-        pass
+    def to_dict(task: Task) -> dict:
+        return {
+            'id': task.id,
+            'title': task.title,
+            'description': task.description,
+            'created_at': task.created_at.isoformat(),
+            'status': task.status.value,
+            'finished_at': task.finished_at.isoformat() if task.finished_at else None,
+        }
 
     @staticmethod
-    def json_from_task(task: Task) -> json:
-        pass
+    def from_dict(task_dict: dict) -> Task:
+        return Task(
+            id=task_dict['id'],
+            title=task_dict['title'],
+            description=task_dict['description'],
+            created_at=datetime.fromisoformat(task_dict['created_at']),
+            status=TaskStatus(task_dict['status']),
+            finished_at=datetime.fromisoformat(task_dict['finished_at']) if task_dict.get('finished_at') else None
+        )
 
-
-    # @classmethod
-    # def task_from_dict(cls, task_dict):
-    #     return cls(task_dict['title'], 
-    #                 task_dict['description'], 
-    #                 task_dict['created_at'], 
-    #                 task_dict['status'], 
-    #                 task_dict['finished_at'], 
-    #                 task_dict['id'],
-    #                 )
+    @staticmethod
+    def json_from_task(task: Task) -> str:
+        return json.dumps(TaskSerializer.to_dict(task), indent=4)
 
 
     # def dict_from_task(self):
