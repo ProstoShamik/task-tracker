@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-import random
 import uuid
 from typing import Optional
 import json
@@ -72,10 +71,11 @@ class Task:
         self._status = TaskStatus.DONE
 
     def reopen(self):
-        if self.status == TaskStatus.NOT_DONE :
+        if self.status == TaskStatus.NOT_DONE:
             print('Task is already not done!')
+            return
         self._finished_at = None
-        self._status = TaskStatus.DONE
+        self._status = TaskStatus.NOT_DONE
 
 # print task
 
